@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Órbita - Pesquisa</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f3e6ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .logo {
+      width: 200px;
+      margin-top: 40px;
+    }
+
+    .search-box {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 450px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 25px;
+      border: 2px solid #a24dff;
+      outline: none;
+    }
+
+    .search-box button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background: #a24dff;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    .results {
+      width: 90%;
+      max-width: 700px;
+      margin-top: 30px;
+    }
+
+    .result-item {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-left: 5px solid #a24dff;
+    }
+
+    .result-item a {
+      color: #6a00ff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGO (embutida em base64 — opção B) -->
+  <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...MUDEIqaA==" />
+
+  <!-- BARRA DE PESQUISA -->
+  <div class="search-box">
+    <input id="searchInput" type="text" placeholder="Pesquisar no Órbita...">
+    <button onclick="search()">Buscar</button>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="results" id="results"></div>
+
+  <!-- SCRIPT DO SISTEMA -->
+  <script>
+    function gerarResultados(q) {
+      const normalizado = q.toLowerCase().replace(/\s+/g, "");
+
+      // 🔹 PRIMEIRO RESULTADO — SITE OFICIAL
+      const siteOficial = `https://www.${normalizado}.com`;
+
+      // 🔹 SEGUNDO — WIKIPÉDIA
+      const wikipedia = `https://pt.wikipedia.org/wiki/${encodeURIComponent(q)}`;
+
+      // 🔹 EXTRAS
+      const extras = [
+        `https://www.${normalizado}online.com`,
+        `https://info-${normalizado}.net`,
+        `https://guia${normalizado}.org`,
+        `https://sobre-${normalizado}.com.br`,
+        `https://${normalizado}-oficial.net`
+      ];
+
+      return [
+        {
+          title: `Site oficial de ${q}`,
+          text: `Este é o site oficial relacionado ao termo pesquisado.`,
+          url: siteOficial
+        },
+        {
+          title: `${q} – Wikipédia`,
+          text: `Artigo da Wikipédia sobre ${q}.`,
+          url: wikipedia
+        },
+        ...extras.map(link => ({
+          title: `Informações sobre ${q}`,
+          text: `Mais detalhes, guias e dados sobre ${q}.`,
+          url: link
+        }))
+      ];
+    }
+
+    function search() {
+      const q = document.getElementById("searchInput").value.trim();
+      const resultsBox = document.getElementById("results");
+      resultsBox.innerHTML = "";
+
+      if (!q) return;
+
+      const results = gerarResultados(q);
+
+      results.forEach(r => {
+        resultsBox.innerHTML += `
+          <div class="result-item">
+            <h3>${r.title}</h3>
+            <p>${r.text}</p>
+            <a href="${r.url}" target="_self">Abrir</a>
+          </div>
+        `;
+      });
+    }
+  </script>
+
+</body>
+</html>
